@@ -2,6 +2,9 @@
 
 # Занятие «SQL. Часть 2»
 
+```
+USE sakila
+```
 
 ### Задание 1
 Одним запросом получите информацию о магазине, в котором обслуживается более 300 покупателей, и выведите в результат следующую информацию: 
@@ -13,16 +16,15 @@
 
 ```
 SELECT 
-    s.store_id,
-    st.first_name || ' ' || st.last_name AS staff_name,
-    c.city,
+    st.first_name, st.last_name, 
+    c.city, 
     COUNT(cu.customer_id) AS customer_count
 FROM store s
 JOIN staff st ON s.store_id = st.store_id
 JOIN address a ON s.address_id = a.address_id
 JOIN city c ON a.city_id = c.city_id
 JOIN customer cu ON s.store_id = cu.store_id
-GROUP BY s.store_id, st.first_name, st.last_name, c.city
+GROUP BY st.first_name, st.last_name, c.city
 HAVING COUNT(cu.customer_id) > 300;
 ```
 
@@ -53,9 +55,8 @@ WHERE length > (SELECT AVG(length) FROM film);
 SELECT 
     DATE_FORMAT(p.payment_date, '%Y-%m') AS month,
     SUM(p.amount) AS total_payments,
-    COUNT(r.rental_id) AS rentals_count
+    COUNT(DISTINCT p.rental_id) AS rentals_count
 FROM payment p
-JOIN rental r ON p.rental_id = r.rental_id
 GROUP BY DATE_FORMAT(p.payment_date, '%Y-%m')
 ORDER BY total_payments DESC
 LIMIT 1;
